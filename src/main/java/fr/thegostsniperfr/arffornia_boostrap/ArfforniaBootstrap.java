@@ -2,7 +2,6 @@ package fr.thegostsniperfr.arffornia_boostrap;
 
 import fr.thegostsniperfr.arffornia_boostrap.updaters.JavaUpdater;
 import fr.thegostsniperfr.arffornia_boostrap.updaters.LauncherUpdater;
-
 import fr.thegostsniperfr.java_toolbox.distribution.ArchType;
 import fr.thegostsniperfr.java_toolbox.distribution.OsType;
 import fr.thegostsniperfr.java_toolbox.distribution.OsUtils;
@@ -22,16 +21,11 @@ public class ArfforniaBootstrap {
     private final OsType osType;
     private final ArchType archType;
     private final Path launcherJarPath;
-
+    private final ProgressSteps progressSteps;
 
     private Logger logger;
 
     public ArfforniaBootstrap() {
-        /*  TODO
-            Check & download Java 17
-            Check & download Arffornia launcher (last version)
-            Launch Arffornia launcher with java 17 version
-         */
         instance = this;
 
         this.gameDirPath = OsUtils.getAppdataDirPath().resolve(GAME_DIR_NAME);
@@ -40,25 +34,31 @@ public class ArfforniaBootstrap {
         this.launcherJarPath = gameDirPath.resolve(ArfforniaBootstrap.getLauncherJarName());
 
         this.initLogger();
+        this.progressSteps = new ProgressSteps(this.logger);
 
         DirUtils.createDirIfNotExist(this.gameDirPath);
 
         // Update java
-        JavaUpdater javaUpdater = new JavaUpdater(this.gameDirPath, this.osType, this.archType, System.out::println);
+        JavaUpdater javaUpdater = new JavaUpdater(this.gameDirPath, this.osType, this.archType, progressSteps::onJavaStep);
 
         // Update launcher
-        new LauncherUpdater(this.launcherJarPath);
+        new LauncherUpdater(this.launcherJarPath, this.progressSteps);
 
         // Launch launcher
         this.launchLauncher(javaUpdater.getJavaHomePath());
     }
 
+    public void progressStep(String step) {
+        System.out.println("TEST step: " + step);
+    }
+
     private void launchLauncher(Path javaHome) {
+        this.progressSteps.setProgressStep(ProgressSteps.ProgressStep.LAUNCHING_LAUNCHER);
         String javaBinPath = javaHome.resolve("bin").resolve("java").toString();
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(javaBinPath, "-jar", this.launcherJarPath.toString());
-            Process process = processBuilder.start();
+            processBuilder.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
