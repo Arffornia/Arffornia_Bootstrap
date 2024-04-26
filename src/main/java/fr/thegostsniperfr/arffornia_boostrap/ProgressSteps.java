@@ -7,9 +7,11 @@ public class ProgressSteps {
     private final Logger logger;
 
     private ProgressStep progressStep;
+    private final UIManager ui;
 
-    public ProgressSteps(Logger logger) {
+    public ProgressSteps(Logger logger, UIManager ui) {
         this.logger = logger;
+        this.ui = ui;
         this.progressStep = ProgressStep.STARTING;
     }
 
@@ -40,6 +42,8 @@ public class ProgressSteps {
         if(step == Callback.Step.DONE) {
             this.setProgressStep(ProgressStep.DONE_JAVA);
         }
+
+        this.ui.loadUI(this.progressStep);
     }
 
     public void setProgressStep(ProgressStep progressStep) {

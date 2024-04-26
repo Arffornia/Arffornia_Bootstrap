@@ -22,6 +22,7 @@ public class ArfforniaBootstrap {
     private final ArchType archType;
     private final Path launcherJarPath;
     private final ProgressSteps progressSteps;
+    private final UIManager ui;
 
     private Logger logger;
 
@@ -34,8 +35,11 @@ public class ArfforniaBootstrap {
         this.launcherJarPath = gameDirPath.resolve(ArfforniaBootstrap.getLauncherJarName());
 
         this.initLogger();
-        this.progressSteps = new ProgressSteps(this.logger);
 
+        // Load UI
+        this.ui = new UIManager();
+
+        this.progressSteps = new ProgressSteps(this.logger, this.ui);
         DirUtils.createDirIfNotExist(this.gameDirPath);
 
         // Update java
@@ -46,10 +50,9 @@ public class ArfforniaBootstrap {
 
         // Launch launcher
         this.launchLauncher(javaUpdater.getJavaHomePath());
-    }
 
-    public void progressStep(String step) {
-        System.out.println("TEST step: " + step);
+        // Exit
+        System.exit(0);
     }
 
     private void launchLauncher(Path javaHome) {
