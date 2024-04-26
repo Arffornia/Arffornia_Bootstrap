@@ -13,4 +13,24 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>fr.thegostsniperfr</groupId>
+            <artifactId>java_downloader</artifactId>
+            <version>1.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>fr.thegostsniperfr</groupId>
+                    <artifactId>java_toolbox</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.thegostsniperfr</groupId>
+            <artifactId>java_toolbox</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+    </dependencies>
+
 </project>
